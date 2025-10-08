@@ -23,3 +23,7 @@ out
 # Application logs
 *.log
 logs/
+
+# Local configuration (ignored from Git)
+config/*
+dev/*
