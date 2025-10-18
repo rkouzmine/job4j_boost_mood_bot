@@ -25,6 +25,7 @@ public class TgRemoteService extends TelegramLongPollingBot {
     private final UserRepository userRepository;
 
     public static final Map<String, String> MOOD_RESP = new HashMap<>();
+    private static final String START = "/start";
 
     public TgRemoteService(@Value("${telegram.bot.name}") String botName,
                            @Value("${telegram.bot.token}") String botToken,
@@ -56,7 +57,7 @@ public class TgRemoteService extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         if (update.hasMessage() && update.getMessage().hasText()) {
             var message = update.getMessage();
-            if ("/start".equals(message.getText())) {
+            if (START.equals(message.getText())) {
                 long chatId = message.getChatId();
                 var user = new User();
                 user.setClientId(message.getFrom().getId());
