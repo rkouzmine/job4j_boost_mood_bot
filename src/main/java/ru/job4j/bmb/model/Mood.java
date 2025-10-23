@@ -15,6 +15,14 @@ public class Mood {
 
     private boolean good;
 
+    public Mood() {
+    }
+
+    public Mood(String text, boolean good) {
+        this.text = text;
+        this.good = good;
+    }
+
     public Mood(Long id, String text, boolean good) {
         this.id = id;
         this.text = text;
