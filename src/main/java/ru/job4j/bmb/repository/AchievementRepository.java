@@ -8,4 +8,6 @@ import java.util.List;
 public interface AchievementRepository extends CrudRepository<Achievement, Long> {
 
     List<Achievement> findAll();
+
+    boolean existsByUserIdAndAwardId(Long userId, Long awardId);
 }

@@ -17,6 +17,15 @@ public class MoodLogFakeRepository extends CrudRepositoryFake<MoodLog, Long> imp
     }
 
     @Override
+    public <S extends MoodLog> S save(S entity) {
+        if (entity.getId() == null) {
+            entity.setId((long) (memory.size() + 1));
+        }
+        memory.put(entity.getId(), entity);
+        return entity;
+    }
+
+    @Override
     public List<MoodLog> findByUserId(Long userId) {
         return memory.values().stream()
                 .filter(moodLog -> moodLog.getUser().getId().equals(userId))

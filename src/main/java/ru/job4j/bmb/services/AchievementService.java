@@ -46,13 +46,26 @@ public class AchievementService implements ApplicationListener<UserEvent> {
         if (award.isEmpty()) {
             content.setText("У Вас нет наград 😟");
         } else {
-            Achievement achievement = new Achievement();
-            achievement.setUser(user);
-            achievement.setAward(award.get());
-            achievement.setCreateAt(Instant.now().getEpochSecond());
-            achievementRepository.save(achievement);
-            content.setText("🎉 Поздравляем! Вы получили награду: " + award.get().getDescription());
+            Award aw = award.get();
+
+            boolean alreadyExists = achievementRepository
+                    .existsByUserIdAndAwardId(user.getId(), aw.getId());
+
+            if (!alreadyExists) {
+                Achievement achievement = new Achievement();
+                achievement.setUser(user);
+                achievement.setAward(aw);
+                achievement.setCreateAt(Instant.now().getEpochSecond());
+
+                achievementRepository.save(achievement);
+
+                content.setText("🎉 Поздравляем! Вы получили награду: "
+                        + aw.getDescription());
+            } else {
+                content.setText("У Вас уже есть эта награда 👍");
+            }
         }
+
         sentContent.sent(content);
     }
 }
