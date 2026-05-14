@@ -1,5 +1,7 @@
 package ru.job4j.bmb.repository;
 
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.repository.CrudRepository;
 import ru.job4j.bmb.model.MoodLog;
 import ru.job4j.bmb.model.User;
@@ -15,10 +17,39 @@ public interface MoodLogRepository extends CrudRepository<MoodLog, Long> {
 
     Stream<MoodLog> findByUserIdOrderByCreatedAtDesc(Long userId);
 
-    List<User> findUsersWhoDidNotVoteToday(long startOfDay, long endOfDay);
+    @Query("""
+       select u
+       from User u
+       where u.id not in (
+           select m.user.id
+           from MoodLog m
+           where m.createdAt between :startOfDay and :endOfDay
+       )
+       """)
+    List<User> findUsersWhoDidNotVoteToday(
+            @Param("startOfDay") long startOfDay,
+            @Param("endOfDay") long endOfDay
+    );
 
-    List<MoodLog> findMoodLogsForWeek(Long userId, long weekStart);
+    @Query("""
+           select m
+           from MoodLog m
+           where m.user.id = :userId
+           and m.createdAt >= :weekStart
+           """)
+    List<MoodLog> findMoodLogsForWeek(
+            @Param("userId") Long userId,
+            @Param("weekStart") long weekStart
+    );
 
-    List<MoodLog> findMoodLogsForMonth(Long userId, long monthStart);
-
+    @Query("""
+           select m
+           from MoodLog m
+           where m.user.id = :userId
+           and m.createdAt >= :monthStart
+           """)
+    List<MoodLog> findMoodLogsForMonth(
+            @Param("userId") Long userId,
+            @Param("monthStart") long monthStart
+    );
 }
